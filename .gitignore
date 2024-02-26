@@ -1,6 +1,9 @@
 # Vendor ZIP File
 vendor_ci445.zip
 
+# All .dist files
+*.dist
+
 # Operating Specific Junk Files
 
 # OS X
