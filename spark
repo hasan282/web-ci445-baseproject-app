@@ -21,6 +21,19 @@
  * this class mainly acts as a passthru to the framework itself.
  */
 
+$optionSpark = array(
+
+    // if deployed to server change to 'true'
+    'deployment'    => false,
+
+    // public folder name with main index.php
+    'public_folder' => 'ci_public'
+
+);  // ^^ change optionSpark if application is deployed, don't forget to change index.php too
+
+// This file path
+define('SPARKPATH', __DIR__ . DIRECTORY_SEPARATOR);
+
 // Refuse to run when called from php-cgi
 if (strpos(PHP_SAPI, 'cgi') === 0) {
     exit("The cli tool is not supported when running php-cgi. It needs php-cli to function!\n\n");
@@ -34,7 +47,6 @@ if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
         $minPhpVersion,
         PHP_VERSION
     );
-
     exit($message);
 }
 
@@ -50,7 +62,8 @@ ini_set('display_errors', '1');
 define('SPARKED', true);
 
 // Path to the front controller
-define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
+$pathToFC = '..' . DIRECTORY_SEPARATOR;
+define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR . $pathToFC . $optionSpark['public_folder'] . DIRECTORY_SEPARATOR);
 
 // Ensure the current directory is pointing to the front controller's directory
 chdir(FCPATH);
@@ -65,9 +78,7 @@ chdir(FCPATH);
  */
 
 // Load our paths config file
-// This is the line that might need to be changed, depending on your folder structure.
-require FCPATH . '../app/Config/Paths.php';
-// ^^^ Change this line if you move your application folder
+require SPARKPATH . 'app' . DIRECTORY_SEPARATOR . 'Config' . DIRECTORY_SEPARATOR . 'Paths.php';
 
 $paths = new Config\Paths();
 
@@ -79,7 +90,7 @@ require_once SYSTEMPATH . 'Config/DotEnv.php';
 (new CodeIgniter\Config\DotEnv(ROOTPATH))->load();
 
 // Define ENVIRONMENT
-if (! defined('ENVIRONMENT')) {
+if (!defined('ENVIRONMENT')) {
     define('ENVIRONMENT', env('CI_ENVIRONMENT', 'production'));
 }
 
